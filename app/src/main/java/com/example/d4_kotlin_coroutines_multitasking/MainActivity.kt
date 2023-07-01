@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var mainActivityViewModel: MainActivityViewModel
     private var count = 0
     private lateinit var tvMessage: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +34,14 @@ class MainActivity : AppCompatActivity() {
                 downloadUserData()
             }
         }
+//        ==============================just a sample, this is not included in UI
+        mainActivityViewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        mainActivityViewModel.getUserData()
+        mainActivityViewModel.users.observe(this, Observer { myUsers->
+            myUsers.forEach{
+                Log.i("myTag", "name: ${it.name}")
+            }
+        })
     }
     private suspend fun downloadUserData() {
         for (i in 1..200000) {
